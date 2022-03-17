@@ -3,12 +3,7 @@ package frames
 import controllers.SaveController
 import java.awt.Dimension
 import java.awt.GridLayout
-import javax.swing.BoxLayout
-import javax.swing.ImageIcon
-import javax.swing.JButton
-import javax.swing.JFrame
-import javax.swing.JPanel
-import javax.swing.JTextArea
+import javax.swing.*
 
 class MainFrame : JFrame() {
     init {
@@ -20,11 +15,14 @@ class MainFrame : JFrame() {
         contentPane.layout = BoxLayout(contentPane, BoxLayout.Y_AXIS)
 
         val instrumentsPanel = JPanel()
-        instrumentsPanel.layout = GridLayout(1, 3)
+        instrumentsPanel.layout = BoxLayout(instrumentsPanel, BoxLayout.X_AXIS)
         val openButton = JButton("open")
         val saveButton = JButton("save")
         val newButton = JButton("new")
         val textField = JTextArea()
+        val scrollText = JScrollPane(textField)
+        scrollText.setBounds(10, 60, 780, 500);
+        scrollText.verticalScrollBarPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 
         newButton.addActionListener { new() }
         openButton.addActionListener { open(textField) }
@@ -34,8 +32,8 @@ class MainFrame : JFrame() {
         instrumentsPanel.add(openButton)
         instrumentsPanel.add(saveButton)
         contentPane.add(instrumentsPanel)
-        contentPane.add(textField)
-
+        // contentPane.add(textField)
+        contentPane.add(scrollText)
         isVisible = true
 
     }
