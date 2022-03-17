@@ -2,13 +2,16 @@ package frames
 
 import controllers.SaveController
 import java.awt.Dimension
-import java.awt.GridLayout
+
 import javax.swing.*
 
 class MainFrame : JFrame() {
+    private val textField = JTextArea()
+    private var savedText = ""
+
     init {
         super.setTitle("Notepad")
-        iconImage = ImageIcon("src/main/resources/notes.png").image  //?????????????????????
+        iconImage = ImageIcon("src/main/resources/notes.png").image
         defaultCloseOperation = EXIT_ON_CLOSE
         size = Dimension(400, 400)
         isResizable = true
@@ -19,34 +22,56 @@ class MainFrame : JFrame() {
         val openButton = JButton("open")
         val saveButton = JButton("save")
         val newButton = JButton("new")
-        val textField = JTextArea()
         val scrollText = JScrollPane(textField)
-        scrollText.setBounds(10, 60, 780, 500);
-        scrollText.verticalScrollBarPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+        val language = JComboBox(arrayOf("Python", "Java"))
+        language.maximumSize = Dimension(100, 50)
+
+        scrollText.setBounds(10, 60, 780, 500)
+        scrollText.verticalScrollBarPolicy = ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS
 
         newButton.addActionListener { new() }
-        openButton.addActionListener { open(textField) }
-        saveButton.addActionListener { save(textField) }
+        openButton.addActionListener { open() }
+        saveButton.addActionListener { save() }
 
         instrumentsPanel.add(newButton)
         instrumentsPanel.add(openButton)
         instrumentsPanel.add(saveButton)
+        instrumentsPanel.add(language)
+
+
+        instrumentsPanel.alignmentX = LEFT_ALIGNMENT
+
         contentPane.add(instrumentsPanel)
-        // contentPane.add(textField)
         contentPane.add(scrollText)
         isVisible = true
 
     }
 
     private fun new() {
-        SaveController.Singleton.getInstance().new()
+        if (savedText != textField.text) {
+            val options = arrayOf<Any>("Да", "Нет")
+            val answer = JOptionPane.showOptionDialog(
+                null,
+                "Вы не сохранили файл. Сохранить сейчас?",
+                "Сохранение",
+                JOptionPane.YES_NO_OPTION,
+                0,
+                null,
+                options,
+                0
+            )
+            if (answer == 0) save()
+        }
+        textField.text = ""
+        savedText = ""
     }
 
-    private fun save(textField: JTextArea) {
+    private fun save() {
         SaveController.Singleton.getInstance().save(textField.text)
+        savedText = textField.text
     }
 
-    private fun open(textField: JTextArea) {
+    private fun open() {
         textField.text = SaveController.Singleton.getInstance().open()
     }
 

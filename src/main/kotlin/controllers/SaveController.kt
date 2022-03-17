@@ -46,7 +46,5 @@ class SaveController {
         return true
     }
 
-    fun new() {
-        save("")
-    }
+
 }

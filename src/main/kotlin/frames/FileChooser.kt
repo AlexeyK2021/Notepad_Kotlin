@@ -17,6 +17,7 @@ class FileChooser : JFileChooser() {
     override fun approveSelection() {
         super.approveSelection()
         chosenFile = super.getSelectedFile()
+
     }
 
     fun getChosenFile(): File? = chosenFile
