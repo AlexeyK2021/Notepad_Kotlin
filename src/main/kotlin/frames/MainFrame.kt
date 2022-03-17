@@ -1,13 +1,16 @@
 package frames
 
+import controllers.RunController
 import controllers.SaveController
 import java.awt.Dimension
-
+import java.io.File
+import java.util.Currency
 import javax.swing.*
 
 class MainFrame : JFrame() {
     private val textField = JTextArea()
     private var savedText = ""
+    private var currentFile: String? = ""
 
     init {
         super.setTitle("Notepad")
@@ -22,6 +25,7 @@ class MainFrame : JFrame() {
         val openButton = JButton("open")
         val saveButton = JButton("save")
         val newButton = JButton("new")
+        val runButton = JButton("run")
         val scrollText = JScrollPane(textField)
         val language = JComboBox(arrayOf("Python", "Java"))
         language.maximumSize = Dimension(100, 50)
@@ -32,11 +36,13 @@ class MainFrame : JFrame() {
         newButton.addActionListener { new() }
         openButton.addActionListener { open() }
         saveButton.addActionListener { save() }
+        runButton.addActionListener { runProgram() }
 
         instrumentsPanel.add(newButton)
         instrumentsPanel.add(openButton)
         instrumentsPanel.add(saveButton)
         instrumentsPanel.add(language)
+        instrumentsPanel.add(runButton)
 
 
         instrumentsPanel.alignmentX = LEFT_ALIGNMENT
@@ -66,13 +72,19 @@ class MainFrame : JFrame() {
         savedText = ""
     }
 
-    private fun save() {
-        SaveController.Singleton.getInstance().save(textField.text)
+    private fun save(): String? {
         savedText = textField.text
+        currentFile = SaveController.Singleton.getInstance().save(textField.text)
+        return currentFile
     }
 
     private fun open() {
-        textField.text = SaveController.Singleton.getInstance().open()
+        currentFile = SaveController.Singleton.getInstance().open()
+        textField.text = File(currentFile!!).readText()
     }
 
+    private fun runProgram() {
+        print(currentFile)
+        RunController.Singleton.getInstance().compileRunJava(currentFile!!, "")
+    }
 }

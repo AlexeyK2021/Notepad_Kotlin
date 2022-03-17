@@ -18,17 +18,16 @@ class SaveController {
 
     private var path: String = ""
 
-    fun open(): String {
+    fun open(): String? {
         val fileChooser = FileChooser()
         if (fileChooser.showDialog(null, "Открыть файл") == 0) {
             path = fileChooser.getChosenFile()!!.path
-            val file = File(path)
-            return file.readText()
+            return path
         }
-        return ""
+        return null
     }
 
-    fun save(info: String): Boolean {
+    fun save(info: String): String? {
         val fileChooser = FileChooser()
 
         if (path == "") {
@@ -40,10 +39,10 @@ class SaveController {
             try {
                 this.writeText(text = info, charset = Charset.defaultCharset())
             } catch (e: IOException) {
-                return false
+                return null
             }
         }
-        return true
+        return path
     }
 
 
